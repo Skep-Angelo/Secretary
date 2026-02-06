@@ -1,0 +1,55 @@
+uneditable, unmovable, repetitive forever; 
+    sleeping
+        id:
+        name;
+        editable; false
+        created_at;
+        timing; [[every day, 20:00, 5:00, 9]]
+        focus_duration; Inf
+
+        buffer_time: 10,
+        importance; 1
+
+        status; pending
+
+uneditable, unmovable, repetitive terminable
+    class
+        id:
+        name;
+        editable; false
+        created_at;
+        timing; [[every monday, 8:00, 10:00, 2]]
+        focus_duration; Inf
+
+        buffer_time: 10,
+        importance; 1
+
+        status; pending
+
+uneditable, unmovable, not repetive hence terminable
+    send a message
+        id:
+        name;
+        editable; false
+        created_at;
+        timing; [[monday, 8:00, 8:30, 0.5]]
+        focus_duration; Inf
+
+        buffer_time: 2,
+        importance; 1
+
+        status; pending
+
+editable, movable, not repetive hence terminable
+    send a message
+        id:
+        name;
+        editable; true
+        created_at;
+        timing; [[8:00 - 20:00, monday,january,year], 0.5]
+        focus_duration; Inf
+
+        buffer_time: 2,
+        importance; 1
+
+        status; pending

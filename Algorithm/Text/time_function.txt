@@ -1,0 +1,9 @@
+2 forms of time representation
+
+specific
+    [year, month, day (number or day), time]
+    each field can be a range or specific number per unit
+    Each field set a constraint
+
+span
+    [start_time, end_time or duration]

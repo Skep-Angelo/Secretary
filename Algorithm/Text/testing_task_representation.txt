@@ -6,8 +6,8 @@ uneditable, unmovable, repetitive forever;
 
         time_override: [[], []]
 
-        timing; [start time, end time, total allocated time, focus_duration]
-        editable; [focus_duration: true, time_interval: true] 
+        timing; ["range, specific", [start time, end time, total allocated time, focus_duration]]
+        editable; [focus_duration: true, time_span: true] 
 
         buffer_time: 10,
         importance: 1,

@@ -3,15 +3,16 @@ uneditable, unmovable, repetitive forever;
         id:
         name;
         created_at;
-        
-        timing; [[every day, 20:00, 5:00, 9]]
-        focus_duration; Inf
-        editable; [focus_duration: true, position: true]
+
+        time_override: [[], []]
+
+        timing; [start time, end time, total allocated time, focus_duration]
+        editable; [focus_duration: true, time_interval: true] 
 
         buffer_time: 10,
-        importance; 1
+        importance: 1,
 
-        status; pending
+        status: pending
 
 uneditable, unmovable, repetitive terminable
     class

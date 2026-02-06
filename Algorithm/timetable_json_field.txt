@@ -1,0 +1,7 @@
+{
+  "block_id": string,
+  "editable": boolean,
+  "task_id": string,
+  "timing": [[time_function], ...],
+  "buffer": integer in minutes
+}

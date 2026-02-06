@@ -6,6 +6,7 @@ uneditable, unmovable, repetitive forever;
         created_at;
         timing; [[every day, 20:00, 5:00, 9]]
         focus_duration; Inf
+        editable; [focus_duration: true, position: true]
 
         buffer_time: 10,
         importance; 1
@@ -16,10 +17,11 @@ uneditable, unmovable, repetitive terminable
     class
         id:
         name;
-        editable; false
         created_at;
+
         timing; [[every monday, 8:00, 10:00, 2]]
         focus_duration; Inf
+        editable; [focus_duration: true, position: true]
 
         buffer_time: 10,
         importance; 1
@@ -30,10 +32,11 @@ uneditable, unmovable, not repetive hence terminable
     send a message
         id:
         name;
-        editable; false
         created_at;
+
         timing; [[monday, 8:00, 8:30, 0.5]]
         focus_duration; Inf
+        editable; [focus_duration: false, position: false]
 
         buffer_time: 2,
         importance; 1
@@ -44,10 +47,27 @@ editable, movable, not repetive hence terminable (one time task)
     send a message
         id:
         name;
-        editable; true
         created_at;
+
         timing; [[8:00-8:30], 30]
         focus_duration; 30
+        editable; [focus_duration: true, position: true]
+
+        buffer_time: 2,
+        importance; 1
+
+        status; pending
+
+
+editable, movable, repetive
+    send a message
+        id:
+        name;
+        created_at;
+
+        timing; [[2026-2027], 10h]
+        focus_duration; 1
+        editable; [focus_duration: true, position: true]
 
         buffer_time: 2,
         importance; 1

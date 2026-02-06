@@ -40,14 +40,14 @@ uneditable, unmovable, not repetive hence terminable
 
         status; pending
 
-editable, movable, not repetive hence terminable
+editable, movable, not repetive hence terminable (one time task)
     send a message
         id:
         name;
         editable; true
         created_at;
-        timing; [[8:00 - 20:00, monday,january,year], 0.5]
-        focus_duration; Inf
+        timing; [[8:00-8:30], 30]
+        focus_duration; 30
 
         buffer_time: 2,
         importance; 1

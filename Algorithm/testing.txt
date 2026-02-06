@@ -2,8 +2,8 @@ uneditable, unmovable, repetitive forever;
     sleeping
         id:
         name;
-        editable; false
         created_at;
+        
         timing; [[every day, 20:00, 5:00, 9]]
         focus_duration; Inf
         editable; [focus_duration: true, position: true]

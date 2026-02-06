@@ -1,0 +1,3 @@
+Make a wearable hub, a Jarvis hub AI assistant, converse to you and help you in your day to day activities. Phone acts as the screen if the hub needs a screen, to produce sound or through inbuilt speaker, listens to you and can read on phone screen data.
+
+Bridges with neuromorphic computers to be able to allow local AI processing

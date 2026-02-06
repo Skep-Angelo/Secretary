@@ -1,6 +1,13 @@
+import json
+
 # iterate over all task
+# Read JSON
+with open('data.json', 'r') as f:
+    data = json.load(f)
 # if status is assigned, skip,
+
 # and if status is pending, attempt to assign
+        
 
 # duration: infinite or defined
 

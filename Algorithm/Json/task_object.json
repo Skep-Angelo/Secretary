@@ -6,12 +6,12 @@
 
     "created_at": "2026-02-01T09:15:00Z",
     
-    "timing": ["specific", [], []],
+    "timing": [[], []],
     "editable": [true, true],
 
     "buffer_time": 10,
 
-    "importance" : 1,
+    "importance" : "override",
     
     "status": "pending"
   }]

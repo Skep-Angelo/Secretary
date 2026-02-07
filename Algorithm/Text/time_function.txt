@@ -1,9 +1,21 @@
-2 forms of time representation
+Time representation
+[year, month, date, day, time]
 
-specific
-    [year, month, day (number or day), time]
-    each field can be a range or specific number per unit
-    Each field set a constraint
+    Examples;
+        everday at 8:00
+        [all, all, all, all, 0800:0900]
 
-span
-    [start_time, end_time or duration]
+        every thursday 13:00 to 14:00
+        [all, all, all, thursday, 1300:1400]
+
+        only tomorrow (if today is 2nd january 2026)
+        [2026, january, 3, all, all]
+
+To a string format
+    Each field is separated with /
+    For range, it is separated with :
+    : is not used in time, 24 hour timing will be used and in 4 digits
+
+    Examples
+        "all/all/all/all/800:900"
+        "all/all/all/thursday/1300:1400"

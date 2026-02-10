@@ -3,7 +3,7 @@ Time representation
 
     Examples;
         everday at 8:00
-        [all, all, all, all, 0800:0900]
+        [all, all, all, all, 0800:0900, time zone]
 
         every thursday 13:00 to 14:00
         [all, all, all, thursday, 1300:1400]
@@ -17,5 +17,5 @@ To a string format
     : is not used in time, 24 hour timing will be used and in 4 digits
 
     Examples
-        "all/all/all/all/800:900"
+        "all all all all 800:900 "
         "all/all/all/thursday/1300:1400"

@@ -1,5 +1,8 @@
 Time representation
+
 [year, month, date, day, time]
+day = 0 - 6
+month = 1 - 12
 
     Examples;
         everday at 8:00

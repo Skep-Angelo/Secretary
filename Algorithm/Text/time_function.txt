@@ -20,5 +20,5 @@ To a string format
     : is not used in time, 24 hour timing will be used and in 4 digits
 
     Examples
-        "all all all all 800:900 "
+        "* * * * 800:900"
         "all/all/all/thursday/1300:1400"

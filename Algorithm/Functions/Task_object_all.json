@@ -1,0 +1,45 @@
+{
+    "tasks": [
+        {
+            "id": "string",
+            "name": "string",
+            "category": "work",
+            "created_at": "2026-02-01T09:15:00Z",
+            "timing": [
+                "span time_function",
+                "duration in minutes",
+                "focus_duration"
+            ],
+            "editable": [
+                "boolean",
+                "shift",
+                "boolean",
+                "focus red"
+            ],
+            "buffer_time": "integer in minutes",
+            "importance": "integer 0 - 1",
+            "status": [
+                "string pending",
+                "assigned"
+            ]
+        },
+        {
+            "id": "0a5eab92-2167-4408-975d-9ccc7b692683",
+            "name": "Python",
+            "category": "Skills",
+            "created_at": "2026-02-27T01:05:27Z",
+            "timing": [
+                "2026 all all all all all",
+                1440,
+                30
+            ],
+            "editable": [
+                true,
+                true
+            ],
+            "buffer_time": 10,
+            "importance": 0.5,
+            "status": "pending"
+        }
+    ]
+}

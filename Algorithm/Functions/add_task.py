@@ -3,22 +3,17 @@ import json
 from datetime import datetime, timezone
 
 
-def accept_task(name, category, timing, editable, buffer_time, importance, status):
+def add_task(name, category, timing, editable, buffer_time, importance, status):
     # ______________________________task id generation______________________________
     task_id = str(uuid.uuid4())
-
-
     # ______________________________created at assignment______________________________
     # Get current time in UTC
     now = datetime.now(timezone.utc)
-
     # Format as ISO 8601 string with 'Z' for UTC
     created_at = now.strftime('%Y-%m-%dT%H:%M:%SZ')
-
-
     # ______________________________addition to task list______________________________________
     # Read JSON
-    with open('data.json', 'r') as f:
+    with open('Task_object_all.json', 'r') as f:
         data = json.load(f)
 
     # Modify data
@@ -27,5 +22,7 @@ def accept_task(name, category, timing, editable, buffer_time, importance, statu
     data['tasks'].append(new_task)
 
     # Write back
-    with open('data.json', 'w') as f:
+    with open('Task_object_all.json', 'w') as f:
         json.dump(data, f, indent=4)
+
+add_task("Python", "Skills", ["2026 all all all all all", 1440, 30], [True, True], 10, 0.5, "pending")

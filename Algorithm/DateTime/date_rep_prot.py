@@ -1,3 +1,5 @@
+# Time Representation class
+
 class TimeIntervalRepresentation:
     def __init__(self, datetimerepresentation: str):
         year, month, date, day, time = map(str, datetimerepresentation.split(" "))
@@ -18,6 +20,17 @@ class TimeIntervalRepresentation:
                     self.time_values[self.time_values.index(i)] = set(list(map(int, i.split(","))))
                 else:
                     raise ValueError("Has no duration")
+            if i == "*":
+                if self.time_values.index(i) == 0:
+                    self.time_values[self.time_values.index(i)] = list(range(2026, 10000))
+                elif self.time_values.index(i) == 1:
+                    self.time_values[self.time_values.index(i)] = list(range(1, 13))
+                elif self.time_values.index(i) == 2:
+                    self.time_values[self.time_values.index(i)] = list(range(1, 32))
+                elif self.time_values.index(i) == 3:
+                    self.time_values[self.time_values.index(i)] = list(range(0, 7))
+                elif self.time_values.index(i) == 4:
+                    self.time_values[self.time_values.index(i)] = list(range(0, 24))
         print(f" time rep = {self.time_values}")
 
     def check_date_day(self, year, month, dates, weekday, state):
@@ -155,16 +168,76 @@ class TimeIntervalRepresentation:
     def add(self, other):
         return self.num_rep("start") + other.num_rep("start")
 
-def subtract_time_points(time1, start_end):
-    pass
-    # subtract time from "start or end" time and return new time interval representation
+def subtract_time_points(time, start_end, year=0, month=0, date=0, time_point=0):
+    # extract the start time or end time from the time interval representation
+    # time.start_time returns a list of [year, month, date, time in minutes]
+    if isinstance(time, TimeIntervalRepresentation):
+        val = time.start_time()
+    else:
+        val = time if time is not list else time.split(" ")
+    def reduce_year(var):
+        nonlocal year
+        if val[0] - year < 0:
+            raise ValueError("Cannot subtract more years than the start or end time has")
+        else:
+            val[0] -= var
+
+    def reduce_month(var):
+        nonlocal month
+        if val[1] - month < 0:
+            reduce_year(month//12 + 1)
+            val[1] -= month%12
+        else:
+            val[1] -= var
+
+    def reduce_date(var):
+        nonlocal date
+        if val[2] - date < 0:
+            reduce_month(date//30 + 1)
+            val[2] -= date%30
+        else:
+            val[2] -= var
+
+    def reduce_time(var):
+        nonlocal time_point
+        if val[4] - time_point < 0:
+            reduce_date(time_point//2400 + 1)
+            val[4] -= time_point%2400
+        else:
+            val[4] -= var
+
+    for i in val:
+        if val.index(i) == 0:
+            reduce_year(year)
+        elif val.index(i) == 1:
+            reduce_month(month)
+        elif val.index(i) == 2:
+            reduce_date(date)
+        elif val.index(i) == 4:
+            reduce_time(time_point)
+    ling = ":"
+    # subtract time to "start or end" time and return new time interval representation
+    ands = f"{val[0] if val[0] == time.start_time()[0] else val[0] }{ling}{time.end_time()[0]} {val[1] if val[1] == time.start_time()[1] else val[1]} {val[2] if val[2] == time.start_time()[2] else val[2]} {time.start_time()[3]} {val[4] if val[4] == time.start_time()[4] else val[4]}"
+    # get the start time or end time
+    # add time to it
+    # merge with end time or start time
+    # rewrite the variable with the new time interval representation
 
 def add_time_points(time1, start_end):
     pass
     # add time to "start or end" time and return new time interval representation
+    # get the start time or end time
+    # add time to it
+    # merge with end time or start time
+    # rewrite the variable with the new time interval representation
 
 def shift_time_point(time, shift):
-    pass
+    if shift < 0:
+        subtract_time_points(time, "start")
+        subtract_time_points(time, "end")
+    else:
+        add_time_points(time, "start")
+        add_time_points(time, "end")
     # add time to start and end time and return new time interval representation
 
 

@@ -2,6 +2,7 @@
 
 class TimeIntervalRepresentation:
     def __init__(self, datetimerepresentation: str):
+        datetimerepresentation = datetimerepresentation.strip()
         year, month, date, day, time = map(str, datetimerepresentation.split(" "))
         self.year = year
         self.month = month
@@ -161,13 +162,11 @@ class TimeIntervalRepresentation:
                         i = "0" + str(i)
                 val += str(i)
         return int(val)
-    
-    def subtract(self, other):
-        return self.num_rep("start") - other.num_rep("start")
-    
-    def add(self, other):
-        return self.num_rep("start") + other.num_rep("start")
 
+
+
+
+'''Useful functions'''
 def subtract_time_points(time, start_end, year=0, month=0, date=0, time_point=0):
     # extract the start time or end time from the time interval representation
     # time.start_time returns a list of [year, month, date, time in minutes]

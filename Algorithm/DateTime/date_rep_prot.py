@@ -258,7 +258,7 @@ def comb_start_end(start, end):
             comb.append(f"{start[i]}:{end[i]}")
     return comb
     
-def add_to_timeRep(timestamp, time, units, timespan):
+def get_all_periods(timespan):
     # getting the start and the end times of all periods in the timespan
     dormant_time = start_to_end_span(timespan) - timespan.duration()
     occurences = timespan.duration() / timespan.period()
@@ -271,9 +271,12 @@ def add_to_timeRep(timestamp, time, units, timespan):
         times.append([iter1, step])
         iter1 = step
         iter1  = add_time_time(iter1, time_units(dormant_period, "mins"))
+    return times
 
+def add_to_timeRep(timestamp, time, units, timespan):
     addThisTime = time_units(time, units)
     #find the period the start time is in
+    times = get_all_periods()
     for i in times:
         if timestamp >= i[0] and timestamp <= i[1]:
             periodFound = times.index(i)
@@ -282,19 +285,11 @@ def add_to_timeRep(timestamp, time, units, timespan):
         pass
         # subtract the end time of a period from the timestamp -- (1)
         truncator = sub_time_time(times[steps][1], timestamp)
-        if truncator < time:
-            return sub_time_time(times[step][1], truncator)
+        if truncator < addThisTime:
+            return sub_time_time(times[steps][1], truncator)
         # subtract time from the (1) -- (2)
-        time = truncator - time
-        # else add = (2)
-        # timestart = steps[0]
-
-    
-
-    
-
-    return 0
-
+        addThisTime = truncator - addThisTime
+        timestamp = steps[steps + 1][0]
 
 def subtract_time_points(time, start_end, year=0, month=0, date=0, time_point=0):
     # extract the start time or end time from the time interval representation

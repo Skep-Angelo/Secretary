@@ -1,6 +1,6 @@
 import json
 import uuid
-from DateTime.date_rep_prot import TimeIntervalRepresentation, subtract_time_points, add_time_time, add_to_timeRep
+from DateTime.date_rep_prot import TimeIntervalRepresentation, subtract_time_points, add_time_time, add_to_timeRep, get_all_periods
 
 # Read JSON
 with open("Functions\Task_object_all.json", 'r') as f:
@@ -13,31 +13,14 @@ for data in data_buffer["tasks"]:
         continue
 
     # and if status is pending, attempt to assign
-
-    # duration: infinite or defined
-
-    # add to timetable block if unsplittable
-    '''
-        in attempt to assign
-        check time to occupy
-        if available, assign
-        if not available, is the task movable, assign
-        or if the task taking the position is movable
-        if not all, return cannot assign
-    '''
-
+  
     # variables required
     task_id = data["id"]
     editable = data["editable"]
 
-    # add to timetable block if splittable
-    # splittable has to be defined; week, day, monthly
-
-    # split the time in a given period or based
-    # on pre given time
     def write(timing):
         # Read JSON
-        with open('Json\Active_tasks.json', 'r') as f:
+        with open('Json\Active_tasks2.json', 'r') as f:
             dataWrite = json.load(f)
 
         # Modify data
@@ -45,11 +28,10 @@ for data in data_buffer["tasks"]:
         dataWrite[timing[0]].append(new_task)
 
         # Write back
-        with open('Json\Active_tasks.json', 'w') as f:
+        with open('Json\Active_tasks2.json', 'w') as f:
             json.dump(dataWrite, f, indent=4)
 
-
-
+    
     '''These are the variables upon which computation will be performed before transfer into active tasks'''
     timespan = TimeIntervalRepresentation(data["timing"][0])
 
@@ -84,12 +66,23 @@ for data in data_buffer["tasks"]:
 
             starting_time = timespan.start_time()
             
-            times.append([starting_time, timespan.start_time() + a*timespan_period])
+            times.append([starting_time, timespan.start_time() + a*timespan_period], timespan)
             for i in range(0, task_occurence):
-                step = add_to_timeRep(starting_time, (a*timespan_period), )
+                step = add_to_timeRep(starting_time, (a*timespan_period), timespan)
                 times.append([starting_time, step])
                 starting_time = step
-                
+
+            # check to make sure all the times are in the same periods
+            periods = get_all_periods(timespan)
+            for all in timings:
+                for pds in periods:
+                    if all[0] >= pds[0] and all[0] > pds[1]:
+                        if all[1] >= pds[1] and all[1] > pds[1]:
+                            pass
+                        else:
+                            timings[timings.index(all)] = [all[0], pds[1]]
+                            timings.insert(timings.index(all), [periods[periods.index(pds)+ 1][0], all[1]])
+
             for timings in times:
                 write(timings) # skip count by a
 

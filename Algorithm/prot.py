@@ -1,6 +1,6 @@
 import json
 import uuid
-from DateTime.date_rep_prot import TimeIntervalRepresentation, subtract_time_points, add_time_time
+from DateTime.date_rep_prot import TimeIntervalRepresentation, subtract_time_points, add_time_time, add_to_timeRep
 
 # Read JSON
 with open("Functions\Task_object_all.json", 'r') as f:
@@ -80,7 +80,18 @@ for data in data_buffer["tasks"]:
             write(timings)
     else:
             a = timespan_cycles / task_occurence
-            write() # skip count by a
+            times = []
+
+            starting_time = timespan.start_time()
+            
+            times.append([starting_time, timespan.start_time() + a*timespan_period])
+            for i in range(0, task_occurence):
+                step = add_to_timeRep(starting_time, (a*timespan_period), )
+                times.append([starting_time, step])
+                starting_time = step
+                
+            for timings in times:
+                write(timings) # skip count by a
 
               
 

@@ -1,3 +1,1 @@
-a = "1 3 4 5 6"
-b = a.split(" ")
-print(b)
+print(list(range(0, 10)))

@@ -118,6 +118,9 @@ class TimeIntervalRepresentation:
                     time_end.append(i)
         return time_end
 
+    def text_rep(self):
+        return self.datetimerepresentation
+    
     def duration(self):
         array = self.datetimerepresentation.split(" ")
         state = True
@@ -201,6 +204,29 @@ class TimeIntervalRepresentation:
         return self.duration()/self.period()
 
 '''Useful functions'''
+def start_to_end_span(timerep):
+    s = timerep.start_time()
+    e = timerep.end_time()
+
+    c = []
+
+    c.append((e[0]- s[0])*365*1440)
+    c.append((e[1]- s[1])*30*1440)
+    c.append((e[2]- s[2])*24*60)
+
+    time = e[4]- s[4]
+    return sum(c) * time
+
+def time_units(time, units):
+    if units == "mins":
+        return [0, 0, 0, time]
+    elif units == "hours":
+        return [0, 0, 0, time*100]
+    elif units == "months":
+        return [0, time, 0, 0]
+    elif units == "years":
+        return [time, 0, 0, 0]
+
 def add_time_time(time1, time2):
     mods = [10000, 12, 31, 24]
     new_time = time1
@@ -232,7 +258,41 @@ def comb_start_end(start, end):
             comb.append(f"{start[i]}:{end[i]}")
     return comb
     
-def add_to_timeRep(timeRep, time):
+def add_to_timeRep(timestamp, time, units, timespan):
+    # getting the start and the end times of all periods in the timespan
+    dormant_time = start_to_end_span(timespan) - timespan.duration()
+    occurences = timespan.duration() / timespan.period()
+    dormant_period = dormant_time / (occurences - 1)
+
+    times = []
+    iter1 = timespan.start_time()
+    for iterations in range(1, int(occurences)):
+        step = add_time_time(iter1, time_units(timespan.period(), "mins"))
+        times.append([iter1, step])
+        iter1 = step
+        iter1  = add_time_time(iter1, time_units(dormant_period, "mins"))
+
+    addThisTime = time_units(time, units)
+    #find the period the start time is in
+    for i in times:
+        if timestamp >= i[0] and timestamp <= i[1]:
+            periodFound = times.index(i)
+
+    for steps in range(periodFound, len(times)):
+        pass
+        # subtract the end time of a period from the timestamp -- (1)
+        truncator = sub_time_time(times[steps][1], timestamp)
+        if truncator < time:
+            return sub_time_time(times[step][1], truncator)
+        # subtract time from the (1) -- (2)
+        time = truncator - time
+        # else add = (2)
+        # timestart = steps[0]
+
+    
+
+    
+
     return 0
 
 

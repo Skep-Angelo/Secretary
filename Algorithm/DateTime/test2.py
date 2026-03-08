@@ -1,4 +1,1 @@
-import math
-
-a = -29%30
-print(a)
+print(list(range(0,0)))

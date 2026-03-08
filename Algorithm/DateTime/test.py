@@ -1,4 +1,6 @@
-a = [1, 2, 3, 4, 5]
-a[0] = [1,2]
-a.insert(0, [3,4])
-print(a)
+value = [1,2,3,4]
+a = ""
+if isinstance(value, list):
+    for i in value:
+        a += str(i)
+print(int(a))

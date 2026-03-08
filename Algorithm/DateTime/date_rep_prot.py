@@ -32,7 +32,7 @@ class TimeIntervalRepresentation:
                     self.time_values[self.time_values.index(i)] = list(range(0, 7))
                 elif self.time_values.index(i) == 4:
                     self.time_values[self.time_values.index(i)] = [0000,2400]
-        print(f" time rep = {self.time_values}")
+        #print(f" time rep = {self.time_values}")
 
     def check_date_day(self, year, month, dates, weekday, state):
         import calendar
@@ -150,7 +150,7 @@ class TimeIntervalRepresentation:
         hours = list(str(a))[0] + list(str(a))[1] if len(str(a)) == 4 else list(str(a))[0]
         time = float(hours) + float(minute)/60
         #print(f"time: {time}")
-        print(c)
+        #print(c)
         return sum(c)*time
     
     def num_rep(self, point):
@@ -203,25 +203,34 @@ class TimeIntervalRepresentation:
     def cycle(self):
         return self.duration()/self.period()
 
+
+
 '''Useful functions'''
+def comparable(value):
+    a = ""
+    if isinstance(value, list):
+        for i in value:
+            a += str(i)
+    return int(a)
+
 def start_to_end_span(timerep):
     s = timerep.start_time()
     e = timerep.end_time()
 
     c = []
 
-    c.append((e[0]- s[0])*365*1440)
-    c.append((e[1]- s[1])*30*1440)
-    c.append((e[2]- s[2])*24*60)
+    c.append((float(e[0])- float(s[0]))*365*1440)
+    c.append((float(e[1])- float(s[1]))*30*1440)
+    c.append((float(e[2])- float(s[2]))*24*60)
 
-    time = e[4]- s[4]
+    time = e[3]- s[3]
     return sum(c) * time
 
 def time_units(time, units):
     if units == "mins":
-        return [0, 0, 0, time]
+        return [0, 0, 0, time/60]
     elif units == "hours":
-        return [0, 0, 0, time*100]
+        return [0, 0, 0, time]
     elif units == "months":
         return [0, time, 0, 0]
     elif units == "years":
@@ -233,7 +242,7 @@ def add_time_time(time1, time2):
     for i in range(3, 0, -1):
         new_time[i] = (time1[i] + time2[i]) % mods[i]
         try:
-            new_time[i-1] =+ time1[i] + (time2[i] // mods[i])
+            new_time[i-1] =+ (time1[i] + time2[i]) // mods[i]
         except IndexError:
             pass
     return new_time
@@ -262,23 +271,30 @@ def get_all_periods(timespan):
     # getting the start and the end times of all periods in the timespan
     dormant_time = start_to_end_span(timespan) - timespan.duration()
     occurences = timespan.duration() / timespan.period()
-    dormant_period = dormant_time / (occurences - 1)
+    try:
+        dormant_period = dormant_time / (occurences - 1)
+    except ZeroDivisionError:
+        dormant_period = 0
 
     times = []
     iter1 = timespan.start_time()
-    for iterations in range(1, int(occurences)):
+    for iterations in range(0, int(occurences)):
+        print(iter1)
+        print(time_units(timespan.period(), "mins"))
         step = add_time_time(iter1, time_units(timespan.period(), "mins"))
+        print(f"step {step}")
         times.append([iter1, step])
         iter1 = step
         iter1  = add_time_time(iter1, time_units(dormant_period, "mins"))
+    print(f"periods {times}")
     return times
 
 def add_to_timeRep(timestamp, time, units, timespan):
     addThisTime = time_units(time, units)
     #find the period the start time is in
-    times = get_all_periods()
+    times = get_all_periods(timespan)
     for i in times:
-        if timestamp >= i[0] and timestamp <= i[1]:
+        if comparable(timestamp) >= comparable(i[0]) and comparable(timestamp) <= comparable(i[1]):
             periodFound = times.index(i)
 
     for steps in range(periodFound, len(times)):
@@ -346,14 +362,6 @@ def subtract_time_points(time, start_end, year=0, month=0, date=0, time_point=0)
     # merge with end time or start time
     # rewrite the variable with the new time interval representation
 
-def add_time_points(time1, start_end):
-    pass
-    # add time to "start or end" time and return new time interval representation
-    # get the start time or end time
-    # add time to it
-    # merge with end time or start time
-    # rewrite the variable with the new time interval representation
-
 def shift_time_point(time, shift):
     if shift < 0:
         subtract_time_points(time, "start")
@@ -364,7 +372,7 @@ def shift_time_point(time, shift):
     # add time to start and end time and return new time interval representation
 
 
-b = TimeIntervalRepresentation("2026 * * * *")
+#b = TimeIntervalRepresentation("2026 * * * *")
 
 
-print(b.duration())
+print(add_time_time(['2026', 1, 5, 0], [0, 0, 0, 9384.0]))

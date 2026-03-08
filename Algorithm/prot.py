@@ -1,9 +1,9 @@
 import json
 import uuid
-from DateTime.date_rep_prot import TimeIntervalRepresentation, subtract_time_points, add_time_time, add_to_timeRep, get_all_periods
+from DateTime.date_rep_prot import TimeIntervalRepresentation, subtract_time_points, add_time_time, add_to_timeRep, get_all_periods, time_units
 
 # Read JSON
-with open("Functions\Task_object_all.json", 'r') as f:
+with open("Json\\Task_object_all2.json", 'r') as f:
     data_buffer = json.load(f)
 
 # iterate over all task
@@ -20,7 +20,7 @@ for data in data_buffer["tasks"]:
 
     def write(timing):
         # Read JSON
-        with open('Json\Active_tasks2.json', 'r') as f:
+        with open('Json\\Active_tasks2.json', 'r') as f:
             dataWrite = json.load(f)
 
         # Modify data
@@ -28,7 +28,7 @@ for data in data_buffer["tasks"]:
         dataWrite[timing[0]].append(new_task)
 
         # Write back
-        with open('Json\Active_tasks2.json', 'w') as f:
+        with open('Json\\Active_tasks2.json', 'w') as f:
             json.dump(dataWrite, f, indent=4)
 
     
@@ -66,9 +66,9 @@ for data in data_buffer["tasks"]:
 
             starting_time = timespan.start_time()
             
-            times.append([starting_time, timespan.start_time() + a*timespan_period], timespan)
+            times.append([starting_time, add_time_time(timespan.start_time(), time_units(a*timespan_period, "mins"))])
             for i in range(0, task_occurence):
-                step = add_to_timeRep(starting_time, (a*timespan_period), timespan)
+                step = add_to_timeRep(starting_time, (a*timespan_period), "mins", timespan)
                 times.append([starting_time, step])
                 starting_time = step
 

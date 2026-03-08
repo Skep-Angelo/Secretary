@@ -2,8 +2,8 @@
 
 class TimeIntervalRepresentation:
     def __init__(self, datetimerepresentation: str):
-        datetimerepresentation = datetimerepresentation.strip()
-        year, month, date, day, time = map(str, datetimerepresentation.split(" "))
+        self.datetimerepresentation = datetimerepresentation.strip()
+        year, month, date, day, time = map(str, self.datetimerepresentation.split(" "))
         self.year = year
         self.month = month
         self.date = date
@@ -31,7 +31,7 @@ class TimeIntervalRepresentation:
                 elif self.time_values.index(i) == 3:
                     self.time_values[self.time_values.index(i)] = list(range(0, 7))
                 elif self.time_values.index(i) == 4:
-                    self.time_values[self.time_values.index(i)] = list(range(0, 24))
+                    self.time_values[self.time_values.index(i)] = [0000,2400]
         print(f" time rep = {self.time_values}")
 
     def check_date_day(self, year, month, dates, weekday, state):
@@ -119,15 +119,26 @@ class TimeIntervalRepresentation:
         return time_end
 
     def duration(self):
+        array = self.datetimerepresentation.split(" ")
+        state = True
+        for i in array:
+            if i != "*":
+                state = False
+                break
+            else:
+                continue
+        if state == True:
+            return "inF"
+
         a = self.start_time()
-        print(f"start time: {a}")
+        #print(f"start time: {a}")
         b = self.end_time()
-        print(f"end time: {b}")
+        #print(f"end time: {b}")
         c = []
 
         c.append((len(self.time_values[0]))*365 if isinstance(self.time_values[0], list) else 0)
-        c.append((len(self.time_values[1])%12)*30 if isinstance(self.time_values[1], list) else 0)
-        c.append(len(self.time_values[2])%30 if isinstance(self.time_values[2], list) else 0)
+        c.append((len(self.time_values[1]))*30 if isinstance(self.time_values[1], list) else 0)
+        c.append(len(self.time_values[2]) if isinstance(self.time_values[2], list) else 0)
 
         a = int(self.time_values[4][1]) - int(self.time_values[4][0]) if isinstance(self.time_values[4], list) else 0
         while len(list(str(a))) < 4:
@@ -135,14 +146,14 @@ class TimeIntervalRepresentation:
         minute = str(list(str(a))[len(str(a))-2]) + str(list(str(a))[len(str(a))-1])
         hours = list(str(a))[0] + list(str(a))[1] if len(str(a)) == 4 else list(str(a))[0]
         time = float(hours) + float(minute)/60
-        print(f"time: {time}")
+        #print(f"time: {time}")
         print(c)
         return sum(c)*time
     
     def num_rep(self, point):
         val = ""
         if point == "start":
-            print(f"start time: {self.start_time()}")
+            #print(f"start time: {self.start_time()}")
             for i in self.start_time():
                 if self.start_time().index(i) == 1 or self.start_time().index(i) == 2:
                     while len(str(i)) < 2:
@@ -152,7 +163,7 @@ class TimeIntervalRepresentation:
                         i = "0" + str(i)
                 val += str(i)
         elif point == "end":
-            print(f"end time: {self.end_time()}")
+            #print(f"end time: {self.end_time()}")
             for i in self.end_time():
                 if self.end_time().index(i) == 1 or self.end_time().index(i) == 2:
                     while len(str(i)) < 2:
@@ -163,10 +174,68 @@ class TimeIntervalRepresentation:
                 val += str(i)
         return int(val)
 
+    def period(self):
+        #print(self.datetimerepresentation)
+        array = self.datetimerepresentation.split(" ")
+        for i in range(len(array)-1, -1, -1):
+            if array[i] == "*" or i == 3:
+                continue
+            else:
+                if i == 4:
+                    a = int(self.time_values[4][1]) - int(self.time_values[4][0]) if isinstance(self.time_values[4], list) else 0
+                    while len(list(str(a))) < 4:
+                        a = "0" + str(a)
+                    minute = str(list(str(a))[len(str(a))-2]) + str(list(str(a))[len(str(a))-1])
+                    hours = list(str(a))[0] + list(str(a))[1] if len(str(a)) == 4 else list(str(a))[0]
+                    time = float(hours) + float(minute)/60
+                    return time
+                elif i == 2:
+                    return len(array[i]) * 1440
+                elif i == 1:
+                    return len(array[i]) * 43200
+                elif i == 0:
+                    return self.duration()
+        return "inF"
 
-
+    def cycle(self):
+        return self.duration()/self.period()
 
 '''Useful functions'''
+def add_time_time(time1, time2):
+    mods = [10000, 12, 31, 24]
+    new_time = time1
+    for i in range(3, 0, -1):
+        new_time[i] = (time1[i] + time2[i]) % mods[i]
+        try:
+            new_time[i-1] =+ time1[i] + (time2[i] // mods[i])
+        except IndexError:
+            pass
+    return new_time
+
+def sub_time_time(time1, time2):
+    mods = [10000, 12, 31, 24]
+    new_time = time1
+    for i in range(3, 0, -1):
+        new_time[i] = (time1[i] - time2[i]) % mods[i]
+        try:
+            new_time[i-1] =+ time1[i] - (time2[i] // mods[i])
+        except IndexError:
+            pass
+    return new_time
+
+def comb_start_end(start, end):
+    comb = []
+    for i in range(0, len(start)):
+        if start[i] == end[i]:
+            comb.append(start[i])
+        else:
+            comb.append(f"{start[i]}:{end[i]}")
+    return comb
+    
+def add_to_timeRep(timeRep, time):
+    return 0
+
+
 def subtract_time_points(time, start_end, year=0, month=0, date=0, time_point=0):
     # extract the start time or end time from the time interval representation
     # time.start_time returns a list of [year, month, date, time in minutes]
@@ -240,7 +309,7 @@ def shift_time_point(time, shift):
     # add time to start and end time and return new time interval representation
 
 
-b = TimeIntervalRepresentation("2026 1:3 9:16 0:5 0000:2400")
+b = TimeIntervalRepresentation("2026 * * * *")
 
 
-print(b.num_rep("start"))
+print(b.duration())

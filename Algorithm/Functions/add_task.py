@@ -25,4 +25,4 @@ def add_task(name, category, timing, editable, buffer_time, importance, status):
     with open('Task_object_all.json', 'w') as f:
         json.dump(data, f, indent=4)
 
-add_task("Python", "Skills", ["2026 all all all all all", 1440, 30], [True, True], 10, 0.5, "pending")
+add_task("Python", "Skills", ["2026 * * * * *", 1440, 30], [True, True], 10, 0.5, "pending")

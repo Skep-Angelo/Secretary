@@ -237,25 +237,33 @@ def time_units(time, units):
         return [time, 0, 0, 0]
 
 def add_time_time(time1, time2):
-    mods = [10000, 12, 31, 24]
+    mods = [10000, 12, 30, 24]
     new_time = time1
-    for i in range(3, 0, -1):
-        new_time[i] = (time1[i] + time2[i]) % mods[i]
-        try:
-            new_time[i-1] =+ (time1[i] + time2[i]) // mods[i]
-        except IndexError:
-            pass
+    
+    for i in new_time:
+        new_time[new_time.index(i)] = int(i)
+
+    for i in range(3, -1, -1):
+        buff = time1[i] + time2[i]
+        new_time[i] = buff % mods[i]
+        carry = buff // mods[i]
+        if carry != 0:
+            new_time[i-1] += carry
     return new_time
 
 def sub_time_time(time1, time2):
     mods = [10000, 12, 31, 24]
     new_time = time1
+
+    for i in new_time:
+        new_time[new_time.index(i)] = int(i)
+
     for i in range(3, 0, -1):
-        new_time[i] = (time1[i] - time2[i]) % mods[i]
-        try:
-            new_time[i-1] =+ time1[i] - (time2[i] // mods[i])
-        except IndexError:
-            pass
+        buff = time1[i] - time2[i]
+        new_time[i] = buff % mods[i]
+        carry = buff // mods[i]
+        if carry != 0:
+            new_time[i-1] += carry
     return new_time
 
 def comb_start_end(start, end):
@@ -362,17 +370,19 @@ def subtract_time_points(time, start_end, year=0, month=0, date=0, time_point=0)
     # merge with end time or start time
     # rewrite the variable with the new time interval representation
 
-def shift_time_point(time, shift):
+'''def shift_time_point(time, shift):
     if shift < 0:
         subtract_time_points(time, "start")
         subtract_time_points(time, "end")
     else:
         add_time_points(time, "start")
-        add_time_points(time, "end")
+        add_time_points(time, "end")'''
     # add time to start and end time and return new time interval representation
 
 
 #b = TimeIntervalRepresentation("2026 * * * *")
 
 
-print(add_time_time(['2026', 1, 5, 0], [0, 0, 0, 9384.0]))
+'''print(sub_time_time([2026, 1, 5, 0], [0, 0, 0, 9384.0]))
+print(add_time_time([2026, 1, 5, 0], [0, 0, 0, 9384.0]))'''
+

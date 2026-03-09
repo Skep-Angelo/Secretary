@@ -1,1 +1,1 @@
-print(list(range(0,0)))
+print(list(range(3, -1, -1)))

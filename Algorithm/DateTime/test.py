@@ -1,6 +1,7 @@
-value = [1,2,3,4]
-a = ""
-if isinstance(value, list):
-    for i in value:
-        a += str(i)
-print(int(a))
+a = ['1', '1']
+print(a)
+
+for i in a:
+    a[a.index(i)] = int(i)
+
+print(a)

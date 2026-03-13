@@ -31,7 +31,7 @@ class TimeIntervalRepresentation:
                 elif self.time_values.index(i) == 3:
                     self.time_values[self.time_values.index(i)] = list(range(0, 7))
                 elif self.time_values.index(i) == 4:
-                    self.time_values[self.time_values.index(i)] = [0000,2400]
+                    self.time_values[self.time_values.index(i)] = [0,24]
         #print(f" time rep = {self.time_values}")
 
     def check_date_day(self, year, month, dates, weekday, state):
@@ -132,26 +132,23 @@ class TimeIntervalRepresentation:
                 continue
         if state == True:
             return "inF"
+        
+        #print(f"duration time values {self.time_values}")
 
-        a = self.start_time()
-        #print(f"start time: {a}")
-        b = self.end_time()
-        #print(f"end time: {b}")
         c = []
 
-        c.append((len(self.time_values[0]))*365 if isinstance(self.time_values[0], list) else 0)
-        c.append((len(self.time_values[1]))*30 if isinstance(self.time_values[1], list) else 0)
-        c.append(len(self.time_values[2]) if isinstance(self.time_values[2], list) else 0)
+        year = len(self.time_values[0]) if isinstance(self.time_values[0], list) else 1
+        month = len(self.time_values[1]) if isinstance(self.time_values[1], list) else 1
+        days = len(self.time_values[2]) if isinstance(self.time_values[2], list) else 1
 
-        a = int(self.time_values[4][1]) - int(self.time_values[4][0]) if isinstance(self.time_values[4], list) else 0
+        '''a = int(self.time_values[4][1]) - int(self.time_values[4][0]) if isinstance(self.time_values[4], list) else 0
         while len(list(str(a))) < 4:
             a = "0" + str(a)
         minute = str(list(str(a))[len(str(a))-2]) + str(list(str(a))[len(str(a))-1])
         hours = list(str(a))[0] + list(str(a))[1] if len(str(a)) == 4 else list(str(a))[0]
-        time = float(hours) + float(minute)/60
-        #print(f"time: {time}")
-        #print(c)
-        return sum(c)*time
+        time = float(hours) + float(minute)/60'''
+        time = abs(self.time_values[4][1] - self.time_values[4][0])
+        return year*month*days*time
     
     def num_rep(self, point):
         val = ""
@@ -211,20 +208,34 @@ def comparable(value):
     if isinstance(value, list):
         for i in value:
             a += str(i)
-    return int(a)
+    return float(a)
 
 def start_to_end_span(timerep):
     s = timerep.start_time()
     e = timerep.end_time()
-
     c = []
+    year = (float(e[0])- float(s[0]))+1 if float(e[0])- float(s[0]) != 0 else 1
+    month = (float(e[1])- float(s[1]))+1 if float(e[1])- float(s[1]) != 0 else 1
+    day = (float(e[2])- float(s[2]))+1 if float(e[2])- float(s[2]) != 0 else 1
 
-    c.append((float(e[0])- float(s[0]))*365*1440)
-    c.append((float(e[1])- float(s[1]))*30*1440)
-    c.append((float(e[2])- float(s[2]))*24*60)
+    c.append(year)
+    c.append(month)
+    c.append(day)
+    mul = [366, 30.5, 1]
 
+    for i in range(2, -1, -1):
+        try:
+            if c[i] == 1 and c[i-1] != 1:
+                c[i] *= mul[i-1]
+                break
+        except:
+            return 0
+        
     time = e[3]- s[3]
-    return sum(c) * time
+    res = 1
+    for i in c:
+        res *= i
+    return res * time
 
 def time_units(time, units):
     if units == "mins":
@@ -278,6 +289,9 @@ def comb_start_end(start, end):
 def get_all_periods(timespan):
     # getting the start and the end times of all periods in the timespan
     dormant_time = start_to_end_span(timespan) - timespan.duration()
+    print(f"Start-end_period {start_to_end_span(timespan)}")
+    print(f"Duration {timespan.duration()}")
+    print(f"Dormant time {dormant_time}")
     occurences = timespan.duration() / timespan.period()
     try:
         dormant_period = dormant_time / (occurences - 1)
@@ -287,14 +301,14 @@ def get_all_periods(timespan):
     times = []
     iter1 = timespan.start_time()
     for iterations in range(0, int(occurences)):
-        print(iter1)
-        print(time_units(timespan.period(), "mins"))
+        #print(iter1)
+        #print(time_units(timespan.period(), "mins"))
         step = add_time_time(iter1, time_units(timespan.period(), "mins"))
-        print(f"step {step}")
+        #print(f"step {step}")
         times.append([iter1, step])
         iter1 = step
         iter1  = add_time_time(iter1, time_units(dormant_period, "mins"))
-    print(f"periods {times}")
+    #print(f"periods {times}")
     return times
 
 def add_to_timeRep(timestamp, time, units, timespan):
@@ -380,9 +394,12 @@ def subtract_time_points(time, start_end, year=0, month=0, date=0, time_point=0)
     # add time to start and end time and return new time interval representation
 
 
-#b = TimeIntervalRepresentation("2026 * * * *")
+b = TimeIntervalRepresentation("2026 * * * *")
 
 
 '''print(sub_time_time([2026, 1, 5, 0], [0, 0, 0, 9384.0]))
-print(add_time_time([2026, 1, 5, 0], [0, 0, 0, 9384.0]))'''
-
+print(f"start {b.start_time()}, end {b.end_time()}")
+print(f"Duration {b.duration()}")'''
+#print(f"Duration {b.duration()}")
+#print(f"timeSpan {start_to_end_span(b)}")
+print(f"period {get_all_periods(b)}")

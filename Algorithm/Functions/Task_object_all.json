@@ -37,6 +37,24 @@
             "buffer_time": 10,
             "importance": 0.5,
             "status": "pending"
+        },
+        {
+            "id": "fffa82ed-ed02-4c17-a28f-7d00d75a3690",
+            "name": "Python",
+            "category": "Skills",
+            "created_at": "2026-03-12T13:08:06Z",
+            "timing": [
+                "2026 * * * * *",
+                1440,
+                30
+            ],
+            "editable": [
+                true,
+                true
+            ],
+            "buffer_time": 10,
+            "importance": 0.5,
+            "status": "pending"
         }
     ]
 }

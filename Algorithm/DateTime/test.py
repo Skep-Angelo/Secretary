@@ -1,7 +1,3 @@
-a = ['1', '1']
-print(a)
+a = "202611112.0"
 
-for i in a:
-    a[a.index(i)] = int(i)
-
-print(a)
+print(float(a))

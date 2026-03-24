@@ -9,30 +9,40 @@ class TimeIntervalRepresentation:
         self.date = date
         self.day = day
         self.time = time
+        self.datetimetype = "interval"
         self.time_values = [self.year, self.month, self.date, self.day, self.time]
         for i in self.time_values:
-            if ":" in list(i):
-                if self.time_values.index(i) != 4:
+            if ":" in list(i) or "," in list(i) or "*" in list(i):
+                # an i should not have both : and ,
+                if ":" in list(i):
+                    #if self.time_values.index(i) != 4:
                     self.time_values[self.time_values.index(i)] = list(range(int(i.split(":")[0]), int(i.split(":")[1]) + 1))
-                else:
-                    self.time_values[self.time_values.index(i)] = list(map(int, i.split(":")))
-            if "," in list(i):
-                if self.time_values.index(i) != 4:
+                    #else:
+                    #    self.time_values[self.time_values.index(i)] = list(map(int, i.split(":")))
+                if "," in list(i):
+                    #if self.time_values.index(i) != 4:
                     self.time_values[self.time_values.index(i)] = set(list(map(int, i.split(","))))
+                    #else:
+                    #    self.datetimetype = "timestamp"
+                    if self.time_values.index(i) == 4:
+                        self.datetimetype = "timestamps"
+                if i == "*":
+                    if self.time_values.index(i) == 0:
+                        self.time_values[self.time_values.index(i)] = list(range(2026, 10000))
+                    elif self.time_values.index(i) == 1:
+                        self.time_values[self.time_values.index(i)] = list(range(1, 13))
+                    elif self.time_values.index(i) == 2:
+                        self.time_values[self.time_values.index(i)] = list(range(1, 32))
+                    elif self.time_values.index(i) == 3:
+                        self.time_values[self.time_values.index(i)] = list(range(0, 7))
+                    elif self.time_values.index(i) == 4:
+                        #self.datetimetype = "interval"
+                        self.time_values[self.time_values.index(i)] = [0, 24] # in hours and base 10 decimal for minutes and seconds
                 else:
-                    raise ValueError("Has no duration")
-            if i == "*":
-                if self.time_values.index(i) == 0:
-                    self.time_values[self.time_values.index(i)] = list(range(2026, 10000))
-                elif self.time_values.index(i) == 1:
-                    self.time_values[self.time_values.index(i)] = list(range(1, 13))
-                elif self.time_values.index(i) == 2:
-                    self.time_values[self.time_values.index(i)] = list(range(1, 32))
-                elif self.time_values.index(i) == 3:
-                    self.time_values[self.time_values.index(i)] = list(range(0, 7))
-                elif self.time_values.index(i) == 4:
-                    self.time_values[self.time_values.index(i)] = [0,24]
-        #print(f" time rep = {self.time_values}")
+                    if self.time_values.index(i) == 4:
+                        self.datetimetype = "timestamp"
+
+                # future improvements; there should be possible definition of mid date, years or days
 
     def check_date_day(self, year, month, dates, weekday, state):
         import calendar
@@ -99,6 +109,19 @@ class TimeIntervalRepresentation:
 
     def end_time(self):
         time_end = []
+
+        '''def leap_year(yearVal):
+            if yearVal % 400 == 0:
+                return 28
+            if yearVal % 4 == 0:
+                return 28
+            if yearVal % 100 == 0:
+                return 28
+            return 29
+        
+        month_days = [1, 31, 2, leap_year(2020), 3, 31, 4, 30, 5, 31, 6, 30, 7, 31, 8, 31, 9, 30, 10, 31, 11, 30, 12, 31]
+        lastday = set(self.time_values[2]) + set(list(range(1, (month_days[(self.time_values[1][-1] if isinstance(self.time_values[1], list) else self.time_values[1])+1])))+1)'''
+        
         for i in self.time_values:
             if self.time_values.index(i) == 1:
             ##################################################
@@ -133,6 +156,14 @@ class TimeIntervalRepresentation:
         if state == True:
             return "inF"
         
+        def leap_year(yearVal):
+            if yearVal % 400 == 0:
+                return 28
+            if yearVal % 4 == 0:
+                return 28
+            if yearVal % 100 == 0:
+                return 28
+            return 29
         #print(f"duration time values {self.time_values}")
 
         c = []
@@ -141,38 +172,51 @@ class TimeIntervalRepresentation:
         month = len(self.time_values[1]) if isinstance(self.time_values[1], list) else 1
         days = len(self.time_values[2]) if isinstance(self.time_values[2], list) else 1
 
+
+        month_days = [1, 31, 2, leap_year(year), 3, 31, 4, 30, 5, 31, 6, 30, 7, 31, 8, 31, 9, 30, 10, 31, 11, 30, 12, 31]
+        print(month_days)
+
+        if isinstance(self.time_values[1], list):
+            monthDays = 0
+            for i in self.time_values[1]:
+                monthDays += month_days[(month_days.index(i))+1]
+        else:
+            monthDays = month_days[(month_days.index(self.time_values[1]))+1]
+
         '''a = int(self.time_values[4][1]) - int(self.time_values[4][0]) if isinstance(self.time_values[4], list) else 0
         while len(list(str(a))) < 4:
             a = "0" + str(a)
         minute = str(list(str(a))[len(str(a))-2]) + str(list(str(a))[len(str(a))-1])
         hours = list(str(a))[0] + list(str(a))[1] if len(str(a)) == 4 else list(str(a))[0]
         time = float(hours) + float(minute)/60'''
+
         time = abs(self.time_values[4][1] - self.time_values[4][0])
-        return year*month*days*time
+        return year * month * days * time
+        return year * monthDays * time
     
     def num_rep(self, point):
         val = ""
         if point == "start":
             #print(f"start time: {self.start_time()}")
             for i in self.start_time():
-                if self.start_time().index(i) == 1 or self.start_time().index(i) == 2:
-                    while len(str(i)) < 2:
-                        i = "0" + str(i)
-                elif self.start_time().index(i) == 4:
-                    while len(str(i)) < 4:
-                        i = "0" + str(i)
+                #if self.start_time().index(i) == 1 or self.start_time().index(i) == 2:
+                while len(str(i)) < 2:
+                    i = "0" + str(i)
+                #elif self.start_time().index(i) == 4:
+                #while len(str(i)) < 2:
+                #i = "0" + str(i)
                 val += str(i)
         elif point == "end":
             #print(f"end time: {self.end_time()}")
             for i in self.end_time():
-                if self.end_time().index(i) == 1 or self.end_time().index(i) == 2:
-                    while len(str(i)) < 2:
-                        i = "0" + str(i)
-                elif self.end_time().index(i) == 4:
-                    while len(str(i)) < 4:
-                        i = "0" + str(i)
+                #if self.end_time().index(i) == 1 or self.end_time().index(i) == 2:
+                while len(str(i)) < 2:
+                    i = "0" + str(i)
+                #elif self.end_time().index(i) == 4:
+                #while len(str(i)) < 2:
+                #i = "0" + str(i)
                 val += str(i)
-        return int(val)
+        return float(val)
 
     def period(self):
         #print(self.datetimerepresentation)
@@ -201,7 +245,6 @@ class TimeIntervalRepresentation:
         return self.duration()/self.period()
 
 
-
 '''Useful functions'''
 def comparable(value):
     a = ""
@@ -210,7 +253,25 @@ def comparable(value):
             a += str(i)
     return float(a)
 
+def comb_start_end(start, end, type):
+    comb = []
+    for i in range(0, len(start)):
+        if start[i] == end[i]:
+            comb.append(start[i])
+        else:
+            comb.append(f"{start[i]}:{end[i]}")
+    if type:
+        a = ""
+        for i in comb:
+            a += (str(i) + " ")
+            print(a)
+        return a
+    else:
+        return comb
+
 def start_to_end_span(timerep):
+    repping = TimeIntervalRepresentation(comb_start_end(timerep.start_time(), timerep.end_time(), True))
+    return repping.duration()
     s = timerep.start_time()
     e = timerep.end_time()
     c = []
@@ -276,15 +337,6 @@ def sub_time_time(time1, time2):
         if carry != 0:
             new_time[i-1] += carry
     return new_time
-
-def comb_start_end(start, end):
-    comb = []
-    for i in range(0, len(start)):
-        if start[i] == end[i]:
-            comb.append(start[i])
-        else:
-            comb.append(f"{start[i]}:{end[i]}")
-    return comb
     
 def get_all_periods(timespan):
     # getting the start and the end times of all periods in the timespan
@@ -393,13 +445,11 @@ def subtract_time_points(time, start_end, year=0, month=0, date=0, time_point=0)
         add_time_points(time, "end")'''
     # add time to start and end time and return new time interval representation
 
-
 b = TimeIntervalRepresentation("2026 * * * *")
-
 
 '''print(sub_time_time([2026, 1, 5, 0], [0, 0, 0, 9384.0]))
 print(f"start {b.start_time()}, end {b.end_time()}")
 print(f"Duration {b.duration()}")'''
 #print(f"Duration {b.duration()}")
 #print(f"timeSpan {start_to_end_span(b)}")
-print(f"period {get_all_periods(b)}")
+print(f"start to end {start_to_end_span(b)}")

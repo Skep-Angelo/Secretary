@@ -21,4 +21,4 @@ To a string format
 
     Examples
         "* * * * 800:900"
-        "all/all/all/thursday/1300:1400"
+        ;  :  ,  *

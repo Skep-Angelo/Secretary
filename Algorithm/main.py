@@ -1,7 +1,7 @@
 import json
 import uuid
-from DateTime.date_rep_prot import TimeIntervalRepresentation, subtract_time_points, add_time_time, add_to_timeRep, get_all_periods, time_units
-
+from Algo2.nonPeriodic import task_occurences
+#from DateTime.date_rep_prot import TimeIntervalRepresentation, subtract_time_points, add_time_time, add_to_timeRep, get_all_periods, time_units
 # Read JSON
 with open("Json\\Task_object_all2.json", 'r') as f:
     data_buffer = json.load(f)
@@ -17,6 +17,22 @@ for data in data_buffer["tasks"]:
     # variables required
     task_id = data["id"]
     editable = data["editable"]
+    start_time = data["timing"][0][0]
+    constrain = data["timing"][0][1]
+    end_time = data["timing"][0][2]
+    total_accum_duration = data["timing"][1]
+    focus_duration = data["timing"][2]
+
+    def listTimeToStringDate(valed):
+        val = valed[0:3]
+        padding = [4, 2, 2]
+        for i in range(0, len(val)):
+            while len(str(val[i])) < padding[i]:
+                val[i] = "0" + str(val[i])
+        string = ""
+        for j in val:
+            string += str(j)
+        return str(string)
 
     def write(timing):
         # Read JSON
@@ -24,16 +40,16 @@ for data in data_buffer["tasks"]:
             dataWrite = json.load(f)
 
         # Modify data
-        new_task = {"block_id": str(uuid.uuid4()), "task_id": task_id, "editable": editable, "timing": timing}
-        dataWrite[timing[0]].append(new_task)
+        new_task = {"block_id": str(uuid.uuid4()), "task_id": task_id, "editable": editable, "timing": timing, "state":"uncompleted"}
+        dataWrite.setdefault(listTimeToStringDate(timing[0]), []).append(new_task)#
 
         # Write back
         with open('Json\\Active_tasks2.json', 'w') as f:
-            json.dump(dataWrite, f, indent=4)
+            json.dump(dataWrite, f, indent=1)
 
     
     '''These are the variables upon which computation will be performed before transfer into active tasks'''
-    timespan = TimeIntervalRepresentation(data["timing"][0])
+    '''timespan = TimeIntervalRepresentation(data["timing"][0])
 
     timespan_duration = timespan.duration()
     timespan_period = timespan.period()
@@ -81,9 +97,12 @@ for data in data_buffer["tasks"]:
                             pass
                         else:
                             timings[timings.index(all)] = [all[0], pds[1]]
-                            timings.insert(timings.index(all), [periods[periods.index(pds)+ 1][0], all[1]])
+                            timings.insert(timings.index(all), [periods[periods.index(pds)+ 1][0], all[1]])'''
 
-            for timings in times:
-                write(timings) # skip count by a
+    times = task_occurences(start_time, constrain, end_time, total_accum_duration, focus_duration)
+    print(times)
+
+    for timings in times:
+        write(timings)
 
               
